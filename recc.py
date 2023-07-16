@@ -38,8 +38,11 @@ target_user_id = 1
 # Filter out the target user from the DataFrame
 target_user = df_selected[df_selected['User_ID'] == target_user_id].iloc[0]
 
+# Reshape the target user data to have a single sample
+target_user_reshaped = target_user.drop(['User_ID']).values.reshape(1, -1)
+
 # Calculate user similarity based on website usage metrics
-user_similarity = cosine_similarity(df_selected.drop(['User_ID'], axis=1), target_user.drop(['User_ID']))
+user_similarity = cosine_similarity(df_selected.drop(['User_ID'], axis=1), target_user_reshaped)
 
 # Get indices of users most similar to the target user
 similar_user_indices = user_similarity.argsort()[0][-5:][::-1]
@@ -60,6 +63,10 @@ def main():
     
     st.subheader('Top Recommendations for User ID 1:')
     st.table(recommendations)
+
+if __name__ == '__main__':
+    main()
+
 
 if __name__ == '__main__':
     main()
