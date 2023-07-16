@@ -46,6 +46,9 @@ content_based_recommendations = df[df['Age'] // 10 * 10 == age_range].sample(5)
 # Combine collaborative filtering and content-based filtering recommendations
 recommendations = pd.concat([top_recommendations, content_based_recommendations]).drop_duplicates()
 
+# Remove NA values from recommendations
+recommendations = recommendations.dropna()
+
 # Create the Streamlit app
 def main():
     st.title('Recommendation System')
@@ -55,6 +58,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
