@@ -14,6 +14,8 @@ df = load_data()
 # Filter out non-numeric columns
 numeric_columns = df.select_dtypes(include='number').columns
 df_numeric = df[numeric_columns]
+# Print the columns in the DataFrame
+st.write('Columns in DataFrame:', df.columns.tolist())
 
 # Perform feature selection using SelectKBest
 X = df_numeric.drop(['User_ID'], axis=1)
