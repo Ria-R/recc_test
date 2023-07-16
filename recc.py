@@ -11,9 +11,13 @@ def load_data():
 
 df = load_data()
 
+# Filter out non-numeric columns
+numeric_columns = df.select_dtypes(include='number').columns
+df_numeric = df[numeric_columns]
+
 # Perform feature selection using SelectKBest
-X = df.drop(['User_ID'], axis=1)
-y = df['User_ID']
+X = df_numeric.drop(['User_ID'], axis=1)
+y = df_numeric['User_ID']
 k = 10  # Number of top features to select
 
 selector = SelectKBest(score_func=f_regression, k=k)
