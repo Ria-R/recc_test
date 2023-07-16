@@ -16,12 +16,16 @@ target_user_id = 1
 # Filter out the target user from the DataFrame
 target_user = df[df['User_ID'] == target_user_id].iloc[0]
 
+# Filter out the 'User_Engagement' column
+numeric_columns = df.select_dtypes(include='number').columns.drop(['User_Engagement'])
+df_numeric = df[numeric_columns]
+
 # One-hot encode non-numeric columns
 non_numeric_columns = ['Social']
-df_encoded = pd.get_dummies(df.drop(['User_ID'], axis=1), columns=non_numeric_columns)
+df_encoded = pd.get_dummies(df_numeric.drop(['User_ID'], axis=1), columns=non_numeric_columns)
 
 # One-hot encode the target user
-target_user_encoded = pd.get_dummies(target_user.drop(['User_ID']), columns=non_numeric_columns)
+target_user_encoded = pd.get_dummies(target_user[numeric_columns.drop('User_ID')], columns=non_numeric_columns)
 
 # Realign columns to ensure the same set of columns in both DataFrames
 df_encoded, target_user_encoded = df_encoded.align(target_user_encoded, join='outer', axis=1)
@@ -46,9 +50,6 @@ content_based_recommendations = df[df['Age'] // 10 * 10 == age_range].sample(5)
 # Combine collaborative filtering and content-based filtering recommendations
 recommendations = pd.concat([top_recommendations, content_based_recommendations]).drop_duplicates()
 
-# Remove NA values from recommendations
-recommendations = recommendations.dropna()
-
 # Create the Streamlit app
 def main():
     st.title('Recommendation System')
@@ -58,6 +59,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
 
